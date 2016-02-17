@@ -1,0 +1,137 @@
+#menu{
+	height: 22px;
+	width: 25px;
+	transition:transform 0.2s;
+	transition-delay:0s;
+}
+/*#menu:hover{
+	transform:rotate(90deg);
+}*/
+#center{
+	font-style: Arial inherit;
+	color: white;
+}
+#login1{
+	font-size: 24px;
+	display: inline-block;
+	color: white;
+	font-vertical-align: center;
+	background-color: transparent;
+	border-color: white;
+	border: solid 1px;
+	width: 120px;
+	height: 45px;
+	transition: 0.4s ease;
+}
+#login1:hover{
+	color: #FF7F50;
+	background-color: white;
+}
+#register1{
+	font-size: 24px;
+	font-vertical-align: center;
+	display: inline-block;
+	color: white;
+	background-color: transparent;
+	border-color: white;
+	border: solid 1px;
+	width: 120px;
+	height: 45px;
+	transition: 0.4s ease;
+}
+#register1:hover{
+	color: #FF7F50;
+	background-color: white;
+}
+#login22{
+	font-size: 22px;
+	display: inline-block;
+	color: white;
+	font-vertical-align: center;
+	background-color: transparent;
+	border-color: white;
+	border: solid 1px;
+	width: 140px;
+	height: 45px;
+	transition: 0.4s ease;
+}
+#login22:hover{
+	color: #FF7F50;
+	background-color: white;
+}
+#loginimg{
+	transform:translateY(20px);
+	transition:transform 3s;
+	transition-delay:0.5s;
+}
+#navbutton{
+	background: rgba(255, 255, 255, 0);
+}
+#lidropdown{
+	display: block;
+	height: 25px;
+	width: 22px;
+}
+#navul{
+ 	float:left;
+	position: absolute;
+	top: 50px;
+	right: 0px;
+}
+#searchform{
+	position: absolute;
+	top: 16%; left: 25%;
+}
+#tx{
+	position: absolute;
+	top: 6%;
+}
+#txname{
+	position: absolute;
+	top: 6%;
+}
+#login2{
+	font-size: 17px;
+	display: inline-block;
+	color: gray;
+	font-vertical-align: left;
+	background-color: transparent;
+	border-color: white;
+	border: solid 1px;
+	width: 100px;
+	height: 40px;
+	transition: 0.4s ease;
+}
+#login2:hover{
+	color: #FF7F50;
+	background-color: white;
+}
+#btn {
+    width:50px;
+    height:50px;
+    position:fixed;
+    left:40%; 
+    display:none;
+    margin-left:610px;
+    bottom:60px; 
+    background:url(../img/icon_Top.png) no-repeat left top;
+    }
+/*#btn:hover {
+    background:url(../img/top.jpg) no-repeat 0 -39px;
+    }*/
+#login11{
+	font-size: 12px;
+	display: inline-block;
+	color: gray;
+	font-vertical-align: left;
+	background-color: transparent;
+	border-color: white;
+	border: solid 1px;
+	width: 80px;
+	height: 30px;
+	transition: 0.4s ease;
+}
+#login11:hover{
+	color: #FF7F50;
+	background-color: white;
+}
