@@ -41,15 +41,6 @@ $this->title = '设置';
 		<div class="col-lg-9"></div>
 	</ul>
 	<br>
-	<a href="#articleMenu" class="nav-header menu-first collapsed" data-toggle="collapse"><i class="icon-book icon-large"></i> <h3 style="color:coral">头像设置</h3></a>
-	<ul id="articleMenu" class="nav nav-list collapse menu-second">
-		<div class="container">
-            <div class="col-lg-6">
-                <label for="input-file-now">请选择头像</label>
-                <input type="file" id="input-file-now" class="dropify" data-default-file="" />
-            </div>
-        </div>
-	</ul>
 </div>
 
 <script src="./assets/bootstrap.min.js"></script>
@@ -57,30 +48,3 @@ $this->title = '设置';
 <script src="./assets/jquery.goup.min.js"></script>
 <script src="./assets/index.js"></script>
 <script src="./assets/dist/js/dropify.min.js"></script> 
-
-<script>window.jQuery || document.write('<script src="js/jquery-2.1.1.min.js"><\/script>')</script>
-<script>
-    $(document).ready(function(){
-
-        // Translated
-        $('.dropify-fr').dropify({
-            messages: {
-            'default': '点击或拖拽文件到这里',
-	        'replace': '点击或拖拽文件到这里来替换文件',
-	        'remove':  '移除文件',
-	        'error':   '对不起，你上传的文件太大了'
-            }
-        });
-
-        // Used events
-        var drEvent = $('.dropify-event').dropify();
-
-        drEvent.on('dropify.beforeClear', function(event, element){
-            return confirm("Do you really want to delete \"" + element.filename + "\" ?");
-        });
-
-        drEvent.on('dropify.afterClear', function(event, element){
-            alert('File deleted');
-        });
-    });
-</script>

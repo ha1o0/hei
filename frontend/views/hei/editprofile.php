@@ -41,13 +41,13 @@ $this->title = '编辑主页';
 		<label for="">性别：<?= $form->field($model,'gender')->radioList(['1'=>'男','2'=>'女'])->label(false)?></label><br>
 		<label for="">生日：<?= $form->field($model,'birthday')->textinput(['value'=>$userinfo['birthday']])->label(false)?></label><br>
 		<label for="">毕业学校：<?= $form->field($model,'university')->textinput(['value'=>$userinfo['university']])->label(false)?></label><br>
-		<label for="">兴趣爱好：<?= $form->field($model,'hobby')->textarea(['cols'=>22,'value'=>$userinfo['hobby']])->label(false)?></label><br>
+		<label for="">兴趣爱好：<?= $form->field($model,'hobby')->textarea(['cols'=>22,'rows'=>5, 'value'=>$userinfo['hobby']])->label(false)?></label><br>
 	</div>
-	<div class="form-group">
+	<div class="col-lg-5 col-lg-offset-0 form-group">
 		<label for="">联系电话：<?= $form->field($model,'phone')->textinput(['value'=>$userinfo['phone']])->label(false)?></label><br>
 		<label for="">qq：<?= $form->field($model,'qq')->textinput(['value'=>$userinfo['qq']])->label(false)?></label><br>
 		<label for="">微信：<?= $form->field($model,'weixin')->textinput(['value'=>$userinfo['weixin']])->label(false)?></label><br>
-		<label><?= $form->field($model,'provinceid')->dropDownList($model->getProvinceList(),
+		<label>地址：<?= $form->field($model,'provinceid')->dropDownList($model->getProvinceList(),
 	    [
 	    	'id'=>'user-provinces',
 	        'prompt'=>$pro['province'],
@@ -56,8 +56,8 @@ $this->title = '编辑主页';
 	            $("#user-citys").html(data);  
 	            $("#user-areas").html(" ");
             });',
-	    ])->label('地址：') ?></label>
-		<label><?= $form->field($model,'cityid')->dropDownList($model->getCityList(0),
+	    ])->label(false) ?></label>
+		<label><?= $form->field($model,'cityid')->dropDownList($model->getCityList(110000),
 		[	 
 			 'id'=>'user-citys',
 		     'prompt'=>$cit['city'],
@@ -66,7 +66,7 @@ $this->title = '编辑主页';
 	            $("#user-areas").html(data);
 			});',
 		])->label(false) ?></label>
-		<label><?= $form->field($model,'areaid')->dropDownList($model->getAreaList(0),
+		<label><?= $form->field($model,'areaid')->dropDownList($model->getAreaList(110100),
 		[
 			'id'=>'user-areas', 
 			'prompt'=>$are['area'],

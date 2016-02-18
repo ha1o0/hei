@@ -246,8 +246,7 @@ class HeiController extends Controller
         $this->layout = 'heimain';
         if (!\Yii::$app->user->isGuest) {
             $model = new ChangepassForm();
-            $modelf = new UploadForm();
-            return $this->render('setting',['model'=>$model,'modelf'=>$modelf]);
+            return $this->render('setting',['model'=>$model]);
         }else{
             echo "<script>
                   alert('对不起您还没登陆哦');   
