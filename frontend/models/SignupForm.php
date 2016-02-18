@@ -61,7 +61,7 @@ class SignupForm extends Model
             $user = new User();
             $user->username = $this->username;
             $user->email = $this->email;
-            $user->password = $this->password;
+            $user->password = $this->password;//生产环境中不保存用户明文密码
             $user->setPassword($this->password);
             $user->generateAuthKey();
             $user->registertime = date('Y-m-d H:i:s',time());
