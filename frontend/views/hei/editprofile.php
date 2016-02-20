@@ -39,7 +39,7 @@ $this->title = '编辑主页';
 	<div class="col-lg-4 col-lg-offset-3 form-group">
 		<label for="">真实姓名：<?= $form->field($model,'truename')->textinput(['value'=>$userinfo['truename']])->label(false)?></label><br>
 		<label for="">性别：<?= $form->field($model,'gender')->radioList(['1'=>'男','2'=>'女'])->label(false)?></label><br>
-		<label for="">生日：<?= $form->field($model,'birthday')->textinput(['value'=>$userinfo['birthday']])->label(false)?></label><br>
+		<label for="">生日：<?= $form->field($model,'birthday')->textinput(['value'=>$userinfo['birthday'],'placeholder'=>'如1990.02.08'])->label(false)?></label><br>
 		<label for="">毕业学校：<?= $form->field($model,'university')->textinput(['value'=>$userinfo['university']])->label(false)?></label><br>
 		<label for="">兴趣爱好：<?= $form->field($model,'hobby')->textarea(['cols'=>22,'rows'=>5, 'value'=>$userinfo['hobby']])->label(false)?></label><br>
 	</div>
