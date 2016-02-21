@@ -29,17 +29,10 @@ class StateForm extends Model{
 
 	public function wcontent(){
 		if ($this->validate()) {
-			echo "<script language=javascript>
-				document.getElementById(\"login2\").disabled = \"disabled\";
-				</script>";
             $state = new State();
             if (!\Yii::$app->user->isGuest) {
             	$state->uid = Yii::$app->user->identity->id;
             }else{
-            	echo "<script language=javascript>
-				alert('您还未登录！请登录后操作哦');
-				</script>";
-				header("refresh:2;url = ?r=hei/login");
 				exit;
             }
             $state->time = date('Y-m-d H:i:s',time());
@@ -52,9 +45,26 @@ class StateForm extends Model{
         return null;
 	}
 
-	// public function FindUid(){
-
-	// }
+	public function sdelete(){
+		$statede = State::find()->where(['id'=>90])->asArray()->one();
+		if (!\Yii::$app->user->isGuest) {
+				if ($statede!=null){
+					$statede->delete(); 
+				}
+				else{
+					echo "<script language=javascript>
+					alert('对不起找不到该状态！');
+					</script>";
+					exit;
+				}
+            }else{
+            	echo "<script language=javascript>
+				alert('您还未登录！请登录后操作哦');
+				</script>";
+				header("refresh:2;url = ?r=hei/login");
+				exit;
+            }
+	}
 	
 }
 ?>

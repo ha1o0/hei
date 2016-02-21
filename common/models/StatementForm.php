@@ -45,7 +45,7 @@ class StatementForm extends Model{
             $statement->sip = Yii::$app->request->userIP;
             $statement->scid = $this->scid;
 			$statement->save();
-			header("refresh:0;url=?r=hei/index");
+			//header("refresh:0;url=?r=hei/index");
         }
 
         return null;

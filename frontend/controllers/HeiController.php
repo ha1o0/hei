@@ -15,6 +15,8 @@ use common\models\State;
 use common\models\User;
 use common\models\ChangepassForm;
 use common\models\UploadForm;
+use common\models\Zan;
+use common\models\ZanForm;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\web\Controller;
@@ -90,9 +92,6 @@ class HeiController extends Controller
     	$this->layout = false;
     	$model = new StateForm();
         $modelc = new StatementForm();
-        if ($model->load(Yii::$app->request->post())) {
-            $model -> wcontent();
-        }
     	return $this->render('index', [
             'model' => $model,
             'modelc' => $modelc,
@@ -104,7 +103,20 @@ class HeiController extends Controller
      *
      * @return mixed
      */
-  public function actionLogin()
+    public function actionAjaxcontent(){
+        $this->layout = false;
+        $model = new StateForm();
+        if (\Yii::$app->user->isGuest){
+            exit;
+        }else{
+            if ($model->load(yii::$app->request->post())) {
+                if (Yii::$app->request->isAjax) {
+                $model -> wcontent();
+                }
+            }
+        }
+    }
+    public function actionLogin()
     {
     	$this -> layout = false;
         if (!\Yii::$app->user->isGuest) {
@@ -159,32 +171,29 @@ class HeiController extends Controller
         return $this->goHome();
     }
 
-    public function actionComment(){
+    public function actionAjaxcomment(){
         $this-> layout = false;
         $model = new StateForm();
         $modelc = new StatementForm();
         if ($modelc->load(Yii::$app->request->post())) {
-            $modelc -> wcomment();
+            if (Yii::$app->request->isAjax) {
+                $modelc -> wcomment();
+            }
         }
-        return $this->render('index', [
-            'model' => $model,
-            'modelc' => $modelc,
-        ]);
     }
     public function actionCommentp(){
-        $this-> layout = false;
+        $this-> layout = 'heimain';
         $modelc = new StatementForm();
+        $modelid = new StateForm();
         if ($modelc->load(Yii::$app->request->post())) {
             $modelc -> wcomment();
         }
-        return $this->render('profile', [
-            'modelc' => $modelc,
-        ]);
     }
     public function actionProfile(){
         $this->layout = 'heimain';
         $modelc = new StatementForm();
-        return $this->render('profile',['modelc' => $modelc]);
+        $modelid = new StateForm();
+        return $this->render('profile',['modelc' => $modelc, 'modelid' => $modelid]);
     }
 
     public function actionEditprofile(){
@@ -246,7 +255,8 @@ class HeiController extends Controller
         $this->layout = 'heimain';
         if (!\Yii::$app->user->isGuest) {
             $model = new ChangepassForm();
-            return $this->render('setting',['model'=>$model]);
+            $modelf = new UploadForm();
+            return $this->render('setting',['model'=>$model,'modelf'=>$modelf]);
         }else{
             echo "<script>
                   alert('对不起您还没登陆哦');   
@@ -260,6 +270,28 @@ class HeiController extends Controller
         $model = new ChangepassForm();
         if ($model->load(Yii::$app->request->post())) {
             $model -> changepass();
+        }
+    }
+
+    public function actionDelete(){
+        $this->layout = false;
+        $sid = $_POST['sid'];
+        $statede = State::find()->where(['id'=>$sid])->one();
+        if ($statede != null) {
+            $statede -> delete();
+        }else{
+             echo "<script>
+                  alert('对不起找不到该状态！');   
+                  </script>";
+        }
+    }
+
+    public function actionZan(){
+        $this->layout = false;
+        $modelz = new ZanForm();
+        if (Yii::$app->request->isAjax) {
+                $sid = $_POST['sid'];
+                $modelz -> zans($sid);
         }
     }
 }
