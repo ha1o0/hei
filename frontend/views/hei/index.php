@@ -34,6 +34,13 @@ $this->title = '嘿嘿';
 </head>
 <body style="background-color: #f8f8ff">
 <?php $this->beginBody() ?>
+<?php
+if (!\yii::$app->user->isGuest) {
+  echo "<script>var _user_id=1;</script>";
+}else{
+  echo "<script>var _user_id=0;</script>";
+}
+?>
 <div style="background-color: coral; height:65px">
   <nav class="navbar navbar-Coral ">
     <div class="container">
@@ -51,15 +58,13 @@ $this->title = '嘿嘿';
       <div class="col-lg-1 col-lg-offset-7" id="tx">
         <?php if (isset(Yii::$app->user->identity->username)) {
           $urlid = Yii::$app->user->identity->id;
-          echo "<script>var _user_id=1;</script>";
          echo "<a class=\"navbar-brand\" href=\"?r=hei/profile&uid=$urlid\"><img alt=\"嘿嘿\" src=\"./img/3030.png\" class=\"img-rounded\"></a>";
         } else{
-          echo "<script>var _user_id=0;</script>";
           echo "<a href=\"?r=hei/login\"><h4 style=\"color:white;\">登录</h4></a><a href=\"?r=hei/signup\"><h4 style=\"color:white;\">注册</h4></a>";
           }?>
         <?php if (isset(Yii::$app->user->identity->username)) { ?>
           <div class="col-lg-10 col-lg-offset-3" id="txname">
-            <a href="?r=hei/profile&uid=<?php echo $urlid; ?>"><h3 style="color:white"><?php echo Yii::$app->user->identity->username;?></h3></a>
+            <a href="?r=hei/profile&uid=<?php echo $urlid; ?>"><h5 style="color:white"><?php echo Yii::$app->user->identity->username;?></h5></a>
           </div>
         <?php }?>
       </div>
@@ -98,78 +103,84 @@ $this->title = '嘿嘿';
       <?php ActiveForm::end(); ?>
       <div class="form-group">
            <?= Html::submitButton('许下愿望！',['class' => 'btn', 'name' => 'hope-button', 'id' => 'login2', 'onmouseover'=>'checkcontent()']) ?><br>
-           <div class="alert alert-info" id="contentsuccess" role="alert"></div>
-      </div>
+          
+      </div> 
+      <div class="alert alert-info" id="contentsuccess" role="alert"></div>
     </div>
     <legend class=""></legend>
     <?php $n = State::find()->count();    //返回记录的数量
-          $result = State::find()->where(['>','id',1])->asArray()->all(); 
+          $result = State::find()->where(['>','id',0])->asArray()->all(); 
           echo "<script>var n = \"$n\";</script>";
     ?>
     <legend class="">大家的愿望：</legend>
       <!--  数据库拉取所有状态并逐一显示（按数据库插入顺序显示，需要进行时间排序）-->
     <div>
-      <?php for ($i=$n-2; $i>=0; $i--) { 
+      <?php for ($i=$n-1; $i>=0; $i--){ 
+                $ii = $result[$i]['id'];
+                $iii = (int)$ii;
+                $commenti = Statement::find()->where(['scid'=>$iii])->count();
       ?>
       <div>
             <div class="col-lg-1 col-lg-offset-0">
               <?php $uid=$result[$i]['uid'];?>
-              <a href="?r=hei/profile&uid=<?php echo $uid;?>" target="blank"><img src="./img/5050.png" class="img-circle"></a> 
+              <a href="?r=hei/profile&uid=<?php echo $uid;?>" target="blank"><img src="./img/5050.png" class="img-circle"></a>
             </div>
-            <div class="col-lg-1 col-lg-offset-0">
-              <div class="col-lg-12 col-lg-offset-2">
-                <a href="?r=hei/profile&uid=<?php echo $uid;?>" target="blank"><h4><?php 
+            <div class="col-lg-4 col-lg-offset-0">
+              <div class="col-lg-12 col-lg-offset-0">
+                <a href="?r=hei/profile&uid=<?php echo $uid;?>" target="blank"><h5>
+                <?php 
                   $result1 = User::find()->where(['id'=>$uid])->asArray()->one();
                   echo $result1['username'];
-                  ?></h4></a>
+                  ?></h5></a>
               </div>
             </div>
-            <div class="col-lg-3 col-lg-offset-7">
-              <h6 style="color:gray"><?php print_r($result[$i]['time']); ?></h6>
+            <div class="col-lg-4 col-lg-offset-7">
+              <h6 style="color:gray">发布于：<?php print_r($result[$i]['time']); ?></h6>
             </div>
             <div class="col-lg-11 col-lg-offset-1">
               <div class="col-lg-12 col-lg-offset-0">
               <?php print_r($result[$i]['content']); ?>
               </div><h5>&nbsp;</h5>
             </div>
-            
             <div class="col-lg-12 col-lg-offset-0">
-              <?php if ($result[$i]['solved']==1) { ?>
+              <?php if ($result[$i]['solved']!=0) { ?>
                 <div class="col-lg-3 col-lg-offset-1">
                 <button class="btn btn-default" disabled="disabled">已领取</button>
                 </div>
-              <?php }else{ ?>
+              <?php }else{ 
+                if(!\yii::$app->user->isGuest){
+                  $zanif = Zan::find()->andWhere(['sid'=>$ii,'uid'=>yii::$app->user->identity->id])->asArray()->one();
+                }else{            
+                  $zanif1 = Zan::find()->andWhere(['sid'=>$ii,'zanip'=>yii::$app->request->userIP])->asArray()->one();
+                }  
+                ?>
                 <div class="col-lg-3 col-lg-offset-1">
-                  <button class="btn btn-default">领取</button>
+                  <button class="btn btn-default" onclick="lq(this.name)" name="<?php echo $ii;?>" id="<?php echo "g".$ii;?>">领取</button>
                 </div>
               <?php 
               } 
-              $ii = $result[$i]['id'];
-              $iii = (int)$ii;
-              $commenti = Statement::find()->where(['scid'=>$iii])->count();
-              $zanif = Zan::find()->andWhere(['sid'=>$ii,'uid'=>yii::$app->user->identity->id])->asArray()->one();
-              $zanif1 = Zan::find()->andWhere(['sid'=>$ii,'zanip'=>yii::$app->request->userIP])->asArray()->one();
               ?>
               <div class="col-lg-3 col-lg-offset-1 btncomment">
-                <button class="btn btn-default" onclick="show(this.id)" id="<?php echo $ii;?>">评论 <?php echo $commenti; ?></button>
+                <button class="btn btn-default" onclick="show(this.id)" id="<?php echo $ii;?>">评论 <?php echo $commenti; ?> </button>
               </div>
               <div class="col-lg-3 col-lg-offset-1">
                   <?php 
-                      if ($zanif != null || $zanif1 != null) {
+                      if ( (!\yii::$app->user->isGuest && $zanif != null) || (\yii::$app->user->isGuest && $zanif1 != null)) {
                   ?>
-                  <button class="btn btn-default" disabled="disabled" id="<?php echo 'z'.$ii;?>" name="<?php echo $ii;?>">已赞 <?php echo Zan::find()->where(['sid'=>$result[$i]['id']])->count();?></button>
+                  <button class="btn btn-default" disabled="disabled" id="<?php echo "z".$ii;?>" name="<?php echo $ii;?>">已赞 <?php echo Zan::find()->where(['sid'=>$result[$i]['id']])->count();?></button>
                   <?php }else{?>
-                  <button class="btn btn-default" onclick="zan(this.name)" id="<?php echo 'z'.$ii;?>" name="<?php echo $ii;?>">点赞 <?php echo Zan::find()->where(['sid'=>$result[$i]['id']])->count();?></button>
+                  <button class="btn btn-default" onclick="zan(this.name)" id="<?php echo "z".$ii;?>" name="<?php echo $ii;?>">点赞 <?php echo Zan::find()->where(['sid'=>$result[$i]['id']])->count();?></button>
                   <?php }?>
                 </div><h5>&nbsp;</h5>
               <div class="col-lg-11 col-lg-offset-1 btncommenth" id= "<?php echo "_".$ii;?>" >
-                    <?php $form=ActiveForm::begin(['id' => 'form-comment','method'=>'post'])?>
+                    <?php $form=ActiveForm::begin(['id' => "x".$ii,'method'=>'post'])?>
                       <?= $form->field($modelc,'scid')->hiddeninput(['value'=>$iii])->label(false)?>
-                      <?= $form->field($modelc,'scomment')->textarea(['cols'=>31, 'onpropertychange'=>'this.style.posHeight=this.scrollHeight', 'id'=>'comment'])->label(false)?>  
+                      <?= $form->field($modelc,'scomment')->textarea(['cols'=>31, 'onpropertychange'=>'this.style.posHeight=this.scrollHeight', 'id'=>'t'.$ii])->label(false)?>  
                     <?php $form=ActiveForm::end()?>
                     <div class="form-group">
-                        <?= Html::submitButton('评论', ['class' => 'btn', 'name' => 'comment-button', 'id' => 'login11', 'onmouseover'=>'checkcomment()']) ?>
+                        <?= Html::submitButton('评论', ['class' => 'btn login11', 'name' => $ii, 'id' => 'c'.$ii, 'onmouseover'=>'checkcomment()', 'onclick'=> 'comment(this.name)']) ?>
                     </div>
+                    <div class="alert alert-info commentinfo" id="<?php echo "f".$ii;?>" role="alert"></div>
                     <!-- <div class="alert alert-info" id="commentsuccess" role="alert"></div> -->
                     <!--  每条状态下的评论区                 -->
                     <div>
@@ -181,13 +192,13 @@ $this->title = '嘿嘿';
                                   <?php $sid = $commentr[$j]['sid'];?>
                                   <a href="?r=hei/profile&uid=<?php echo $sid;?>" target="blank"><img src="./img/3030.png" alt="" class="img-circle"></a>
                             </div>
-                            <div class="col-lg-1 col-lg-offset-0">
+                            <div class="col-lg-4 col-lg-offset-0">
                                 <a href="?r=hei/profile&uid=<?php echo $sid;?>" target="blank"><?php 
                                   $usernamec = User::find()->where(['id'=>$sid])->one();
                                   echo $usernamec['username'];
                                 ?></a>
                             </div>
-                            <div class="col-lg-3 col-lg-offset-7">
+                            <div class="col-lg-3 col-lg-offset-4">
                                  <h6 style="color:gray"><?php print_r($commentr[$j]['sctime']); ?></h6>
                             </div>
                             <div class="col-lg-11 col-lg-offset-1">
@@ -234,14 +245,12 @@ $this->title = '嘿嘿';
 <script src="./assets/jquery.goup.min.js"></script>
 <script src="./assets/index.js"></script>
 <script type="text/javascript">
-if (_user_id==0) {
+if (_user_id==0){
   $("#login2").attr('disabled',true);
   $("#contentsuccess").html("请登录后才能发布愿望哦");
   $("#contentsuccess").fadeIn();
 }else{
-$("#contentsuccess").hide();
-$(".btncommenth").hide();
-$(document).ready(function() {
+  $("#contentsuccess").hide();
   $("#login2").click(function() {
     $("#login2").text("正在提交……");
     $("#login2").attr('disabled',true);
@@ -253,48 +262,11 @@ $(document).ready(function() {
         $("#login2").attr('disabled',false);
         $("#login2").text("许下愿望！");
         $("#content").val("");
-        $("#contentsuccess").html("发布成功！");
-        $("#contentsuccess").fadeIn();
-        $("#contentsuccess").delay("3000").fadeOut();
+        $("#contentsuccess").html("发布成功！").fadeIn().delay("3000").fadeOut();
       }
     })
   });
-  $("#login11").click(function() {
-    $("#login11").text("正在提交……");
-    $("#login11").attr('disabled',true);
-    $.ajax({
-      url: "?r=hei/ajaxcomment",
-      type: 'post',
-      data: $("#form-comment").serialize(),
-      success: function (data) {
-        $("#login11").attr('disabled',false);
-        $("#login11").text("评论");
-        $("#comment").val("");
-        alert('success');
-      }
-    })
-  });
-});
 }
-function show(i){
-  if ($("#"+'_'+i).is(":hidden")){
-    $("#"+'_'+i).fadeIn();
-  }else{
-    $("#"+'_'+i).fadeOut();
-  };     
-}
-function zan(j){
-  $.ajax({
-    url: '?r=hei/zan',
-    type: 'post',
-    data: {sid:j},
-    success: function(data){
-      $("#"+'z'+j).attr('disabled',true);
-      $("#"+'z'+j).text('已赞');
-    }
-  })
-  
-} 
 </script>
 <?php $this->endBody() ?>
 </body>

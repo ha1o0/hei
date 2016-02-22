@@ -40,6 +40,11 @@ if (isset($_GET['uid'])) {
 	$are = Areas::find()->where(['areaid'=>$userinfo['areaid']])->asArray()->one();
 	echo "<script>var n = \"$n\";var arr=new Array();</script>";
 }
+if (!\yii::$app->user->isGuest) {
+  echo "<script>var _user_id=1;</script>";
+}else{
+  echo "<script>var _user_id=0;</script>";
+}
 ?>
 <div class="container">
 	  <div class="col-lg-4 col-lg-offset-0">
@@ -97,7 +102,7 @@ if (isset($_GET['uid'])) {
 					<?php $uid=$result[$i]['uid'];?>
               		<a href="?r=hei/profile&uid=<?php echo $uid;?>" target="blank"><img src="./img/5050.png" class="img-circle"></a>
             	</div>
-            	<div class="col-lg-1 col-lg-offset-0">
+            	<div class="col-lg-4 col-lg-offset-0">
               		<div class="col-lg-12 col-lg-offset-2">
 	                <a href="?r=hei/profile&uid=<?php echo $uid;?>" target="blank"><h4><?php   
 	                  $result1 = User::find()->where(['id'=>$uid])->asArray()->one();
@@ -105,8 +110,8 @@ if (isset($_GET['uid'])) {
 	                  ?></h4></a>
               		</div>
             	</div>
-            	<div class="col-lg-3 col-lg-offset-7">
-              		<h6 style="color:gray"><?php print_r($result[$i]['time']); ?></h6>
+            	<div class="col-lg-3 col-lg-offset-4">
+              		<h6 style="color:gray">发布于：<?php print_r($result[$i]['time']); ?></h6>
             	</div>
            	 	<div class="col-lg-11 col-lg-offset-1">
               		<div class="col-lg-12 col-lg-offset-0">
@@ -121,7 +126,7 @@ if (isset($_GET['uid'])) {
 	                </div>
 	              <?php }else{ ?>
 	                <div class="col-lg-2 col-lg-offset-1">
-	                  <button class="btn btn-default">领取</button>
+	                  <button class="btn btn-default" onclick="lq(this.name)" name="<?php echo $ii;?>" id="<?php echo 'g'.$ii;?>">领取</button>
 	                </div>
 	              <?php 
 	              }  ?>
@@ -147,7 +152,7 @@ if (isset($_GET['uid'])) {
 	                </div>
 	              <?php }else{ ?>
 	                <div class="col-lg-3 col-lg-offset-1">
-	                  <button class="btn btn-default">领取</button>
+	                  <button class="btn btn-default" onclick="lq(this.name)" name="<?php echo $ii;?>" id="<?php echo 'g'.$ii;?>">领取</button>
 	                </div>
 	              <?php 
 	              }  ?>
@@ -165,13 +170,14 @@ if (isset($_GET['uid'])) {
 	              </div>
 	              <?php }?>
 	              <div class="col-lg-11 col-lg-offset-1 btncommenth" id= "<?php echo "_".$ii;?>" >
-	                    <?php $form=ActiveForm::begin(['id' => 'form-comment','method'=>'post','action'=>'?r=hei/commentp'])?>
+	                    <?php $form=ActiveForm::begin(['id' => "x".$ii,'method'=>'post','action'=>'?r=hei/commentp'])?>
 	                      <?= $form->field($modelc,'scid')->hiddeninput(['value'=>$iii])->label(false)?>
-	                      <?= $form->field($modelc,'scomment')->textarea(['cols'=>31, 'onpropertychange'=>'this.style.posHeight=this.scrollHeight'])->label(false)?>
-	                      <div class="form-group">
-	                        <?= Html::submitButton('评论', ['class' => 'btn', 'name' => 'comment-button', 'id' => 'login11']) ?>
-	                      </div>
+	                      <?= $form->field($modelc,'scomment')->textarea(['cols'=>31, 'onpropertychange'=>'this.style.posHeight=this.scrollHeight','id'=>'t'.$ii])->label(false)?>
 	                    <?php $form=ActiveForm::end()?>
+	                    <div class="form-group">
+                        <?= Html::submitButton('评论', ['class' => 'btn login11', 'name' => $ii, 'id' => 'c'.$ii, 'onmouseover'=>'checkcomment()', 'onclick'=> 'comment(this.name)']) ?>
+                    	</div>
+                    	<div class="alert alert-info commentinfo" id="<?php echo "f".$ii;?>" role="alert"></div>
 	                    <!--  每条状态下的评论区                 -->
 	                    <div>
 	                      <?php $commentr = Statement::find()->where(['scid'=>$iii])->asArray()->all();
@@ -182,13 +188,13 @@ if (isset($_GET['uid'])) {
 									<?php $sid = $commentr[$j]['sid'];?>
 	                                 <a href="?r=hei/profile&uid=<?php echo $sid;?>" target="blank"><img src="./img/3030.png" alt="" class="img-circle"></a>
 	                            </div>
-	                            <div class="col-lg-1 col-lg-offset-0">
+	                            <div class="col-lg-4 col-lg-offset-0">
 	                                <a href="?r=hei/profile&uid=<?php echo $sid;?>" target="blank"><?php 
 	                                  $usernamec = User::find()->where(['id'=>$sid])->one();
 	                                  echo $usernamec['username'];
 	                                ?></a>
 	                            </div>
-	                            <div class="col-lg-3 col-lg-offset-7">
+	                            <div class="col-lg-3 col-lg-offset-4">
 	                                 <h6 style="color:gray"><?php print_r($commentr[$j]['sctime']); ?></h6>
 	                            </div>
 	                            <div class="col-lg-11 col-lg-offset-1">
@@ -213,38 +219,4 @@ if (isset($_GET['uid'])) {
 <script src="./assets/index.js"></script>
 <script type="text/javascript">
 $(".btncommenth").hide();
-function show(i){
-  if ($("#"+'_'+i).is(":hidden")){
-    $("#"+'_'+i).fadeIn();
-  }else{
-    $("#"+'_'+i).hide();
-  };     
-}
-//删除模态框：
-function firm(j) {   
-	if (confirm("你确定删除吗？")) {  
-		$.ajax({
-			url: '?r=hei/delete',
-			type: 'post',
-			data: {sid:j},
-			success: function(data){
-				$("#"+'a'+j).fadeOut();
-			}
-		})	
-	}  
-	else {  
-	}  
-} 
-function zan(j){
-	$.ajax({
-		url: '?r=hei/zan',
-		type: 'post',
-		data: {sid:j},
-		success: function(data){
-			$("#"+'z'+j).attr('disabled',true);
-			$("#"+'z'+j).text('已赞');
-		}
-	})
-	
-} 
 </script>

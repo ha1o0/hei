@@ -60,7 +60,7 @@ AppAsset::register($this);
             }?>
         
         <div class="col-lg-10 col-lg-offset-3" id="txname">
-          <a href="?r=hei/profile&uid=<?php echo $urlid; ?>"><h3 style="color:white"><?php echo Yii::$app->user->identity->username;?></h3></a>
+          <a href="?r=hei/profile&uid=<?php echo $urlid; ?>"><h5 style="color:white"><?php echo Yii::$app->user->identity->username;?></h5></a>
         </div>
       </div>
       <ul class="nav navbar-nav navbar-right">
