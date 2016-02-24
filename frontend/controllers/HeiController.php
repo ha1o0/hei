@@ -2,14 +2,20 @@
 namespace frontend\controllers;
 
 use Yii;
+use yii\base\InvalidParamException;
+use yii\web\BadRequestHttpException;
+use yii\web\Controller;
+use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use yii\web\Session;
 use common\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
+use frontend\models\ContactForm;
 use common\models\StateForm;
 use common\models\Statement;
 use common\models\StatementForm;
-use frontend\models\ContactForm;
 use common\models\EditprofileForm;
 use common\models\State;
 use common\models\User;
@@ -17,16 +23,11 @@ use common\models\ChangepassForm;
 use common\models\UploadForm;
 use common\models\Zan;
 use common\models\ZanForm;
-use yii\base\InvalidParamException;
-use yii\web\BadRequestHttpException;
-use yii\web\Controller;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
-use yii\web\Session;
 use common\models\Userinfo;
 use common\models\Provinces;
 use common\models\Cities;
 use common\models\Areas;
+use common\models\Lq;
 use yii\helpers\Html;
 /**
  * Site controller
@@ -153,22 +154,26 @@ class HeiController extends Controller
             if ($user = $model->signup()) {
                 if (Yii::$app->getUser()->login($user)) {
                     $model = new StateForm();
+                    $modelc = new StatementForm();
                     return $this->render('index', [
-                        'model' => $model,
+                        'model' => $model, 'modelc' => $modelc,
                     ]);
                 }
             }
-        }
-
-        return $this->render('signup', [
+        }else{
+            return $this->render('signup', [
             'model' => $model,
-        ]);
+             ]);
+        }
+        
     }
 
     public function actionLogout()
     {
         Yii::$app->user->logout();
-        return $this->goHome();
+        $model = new StateForm();
+        $modelc = new StatementForm();
+        return $this->render('index',['model'=>$model, 'modelc'=>$modelc]);
     }
 
     public function actionAjaxcomment(){
@@ -294,4 +299,14 @@ class HeiController extends Controller
                 $modelz -> zans($sid);
         }
     }
+
+    public function actionLq(){
+        $this->layout = false;
+        $modell = new Lq();
+        if (yii::$app->request->isAjax) {
+            $sid = $_POST['sid'];
+            $modell -> lq($sid);
+        }
+    }
+    
 }
