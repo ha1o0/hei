@@ -196,9 +196,15 @@ class HeiController extends Controller
     }
     public function actionProfile(){
         $this->layout = 'heimain';
+        if (\Yii::$app->user->isGuest) {
+            echo "<script>alert('对不起你还没登陆哦');</script>";
+            header("refresh:1; url= ?r=hei/login");
+            exit;
+        }else{
         $modelc = new StatementForm();
         $modelid = new StateForm();
         return $this->render('profile',['modelc' => $modelc, 'modelid' => $modelid]);
+        }
     }
 
     public function actionEditprofile(){
@@ -216,6 +222,7 @@ class HeiController extends Controller
                   alert('对不起您还没登陆哦');   
                   </script>";
             header("refresh:1; url= ?r=hei/login");
+            exit;
         }
         
     }

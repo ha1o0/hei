@@ -119,6 +119,11 @@ if (!\yii::$app->user->isGuest) {
                 $ii = $result[$i]['id'];
                 $iii = (int)$ii;
                 $commenti = Statement::find()->where(['scid'=>$iii])->count();
+                if(!\yii::$app->user->isGuest){
+                  $zanif = Zan::find()->andWhere(['sid'=>$ii,'uid'=>yii::$app->user->identity->id])->asArray()->one();
+                }else{            
+                  $zanif1 = Zan::find()->andWhere(['sid'=>$ii,'zanip'=>yii::$app->request->userIP])->asArray()->one();
+                }  
       ?>
       <div>
             <div class="col-lg-1 col-lg-offset-0">
@@ -147,13 +152,7 @@ if (!\yii::$app->user->isGuest) {
                 <div class="col-lg-3 col-lg-offset-1">
                 <button class="btn btn-default" disabled="disabled">已领取</button>
                 </div>
-              <?php }else{ 
-                if(!\yii::$app->user->isGuest){
-                  $zanif = Zan::find()->andWhere(['sid'=>$ii,'uid'=>yii::$app->user->identity->id])->asArray()->one();
-                }else{            
-                  $zanif1 = Zan::find()->andWhere(['sid'=>$ii,'zanip'=>yii::$app->request->userIP])->asArray()->one();
-                }  
-                ?>
+              <?php }else{ ?>
                 <div class="col-lg-3 col-lg-offset-1">
                   <button class="btn btn-default" onclick="lq(this.name)" name="<?php echo $ii;?>" id="<?php echo "g".$ii;?>">领取</button>
                 </div>
